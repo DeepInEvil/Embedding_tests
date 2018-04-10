@@ -42,7 +42,7 @@ if args.gpu:
 
 max_seq_len = 100
 
-amazon = Amazon_loader()
+amazon = Amazon_loader(dom='Toys_Games')
 model = CNN(amazon.emb_dim, amazon.vocab_size, h_dim=args.h_dim, gpu=args.gpu)
 
 solver = optim.Adam(model.parameters(), lr=args.lr)
