@@ -19,7 +19,7 @@ class Amazon_loader:
         self.neg = np.array(pd.read_table(dom + '/' + negative, sep = '\t', header=None)[1])
         self.dat = np.concatenate((self.pos, self.neg))
         self.y = np.concatenate((np.ones(25000), np.zeros(25000)))
-        self.X_tr, self.X_te, self.y_tr, self.y_te = self.create_train_test((self.dat, y))
+        self.X_tr, self.X_te, self.y_tr, self.y_te = self.create_train_test((self.dat, self.y))
         self.vocab = self.create_vocab(self.X_tr)
         np.save(dom + '/' + 'vocab.npy', self.vocab)
         self.X_tr = [[self.getW2Id(self.vocab, w) for w in sent] for sent in self.X_tr]
