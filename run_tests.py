@@ -44,8 +44,8 @@ if args.gpu:
 
 max_seq_len = 100
 
-amazon = Amazon_loader(dom='Toys_Games')
-model = CNN(amazon.emb_dim, amazon.vocab_size, h_dim=args.h_dim, gpu=args.gpu)
+amazon = Amazon_loader(dom='Toys_Games', emb_file='/data/dchaudhu/ESWC_challenge/Embeddings/embeddings_snap_s128_e15.txt', emb_dim=128)
+model = CNN(amazon.emb_dim, amazon.vocab_size, h_dim=args.h_dim, pretrained_emb=amazon.vectors, gpu=args.gpu)
 
 solver = optim.Adam(model.parameters(), lr=args.lr)
 
@@ -53,10 +53,10 @@ if args.gpu:
     model.cuda()
 
 
-def evaluate(model, dataset):
+def evaluate(model, dataset, mode):
 
     model.eval()
-    data_iter = dataset.get_iter('test')
+    data_iter = dataset.get_iter(mode)
 
     acc = 0.0
     c = 0.0
@@ -70,10 +70,11 @@ def evaluate(model, dataset):
         acc = acc + (roc_auc_score(y.data.cpu().numpy(), scores_o.numpy()))
         c = c + 1
 
-    print(acc / c)
+    return (acc/c)
 
 
 if __name__ == '__main__':
+    early_stop = []
     for epoch in range(args.n_epoch):
         print('\n\n-------------------------------------------')
         print('Epoch-{}'.format(epoch))
@@ -92,7 +93,19 @@ if __name__ == '__main__':
             solver.step()
             solver.zero_grad()
 
-        evaluate(model, amazon)
+        acc = evaluate(model, amazon, 'valid')
+        print("Accuracy after epoch:" + str(epoch) + " is " + str(acc))
+        if len(early_stop) < 7:
+            early_stop.append(acc)
+        elif acc < np.max(early_stop[-7:]):
+            print("Exiting training......")
+            break
+        else:
+            early_stop.append(acc)
+
+    acc_test = evaluate(model, amazon, 'test')
+    print("Accuracy on test_set:" + str(acc_test))
+
 
 
 
