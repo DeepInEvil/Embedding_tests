@@ -91,7 +91,7 @@ if __name__ == '__main__':
             solver.step()
             solver.zero_grad()
 
-            evaluate(model, amazon)
+        evaluate(model, amazon)
 
 
 
