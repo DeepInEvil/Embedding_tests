@@ -112,8 +112,11 @@ if __name__ == '__main__':
     for emb in word_embeddings:
         for domain in domains:
             print ("Running model for domain:" + domain)
-            amazon = Amazon_loader(dom=root_dir+domain, emb_file='/data/dchaudhu/ESWC_challenge/Embeddings/'+emb, emb_dim=128)
-            model = CNN(amazon.emb_dim, amazon.vocab_size, h_dim=args.h_dim, pretrained_emb=amazon.vectors, gpu=args.gpu)
+            emb_dim = int(emb.split('_')[2].split('s')[1])
+            amazon = Amazon_loader(dom=root_dir+domain, emb_file='/data/dchaudhu/ESWC_challenge/Embeddings/'+emb,
+                                   emb_dim=emb_dim)
+            model = CNN(amazon.emb_dim, amazon.vocab_size, h_dim=args.h_dim, pretrained_emb=amazon.vectors,
+                        gpu=args.gpu)
 
             solver = optim.Adam(model.parameters(), lr=args.lr)
 
