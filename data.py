@@ -40,7 +40,7 @@ class Amazon_loader:
             with open(emb_file, 'r') as f:
                 emb = f.readlines()
 
-        self.vectors = np.zeros((self.vocab_size, self.emb_dim))
+        vectors = np.zeros((self.vocab_size, self.emb_dim))
 
         for j in range(1, len(emb)):
             word = emb[j].split('\n')[0].strip().split()[0]
@@ -49,7 +49,9 @@ class Amazon_loader:
                 self.vectors[self.vocab[word]] = vec
             except Exception:
                 continue
+
         del emb
+        self.vectors = torch.from_numpy(vectors.astype(np.float32))
 
     def create_vocab(self, train):
         "create word to id mappings"
