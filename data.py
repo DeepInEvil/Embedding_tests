@@ -58,8 +58,11 @@ class Amazon_loader:
         "create word to id mappings"
         vocab = defaultdict(float)
         for sent in train:
-            for w in sent:
-                vocab[w] += 1.0
+            if not isinstance(sent, str):
+                continue
+            else:
+                for w in sent:
+                    vocab[w] += 1.0
 
         w2i = dict(zip(vocab.keys(), range(1, len(vocab) + 1)))
         w2i['UNK'] = len(w2i) + 1
