@@ -23,9 +23,9 @@ class Amazon_loader:
         self.X_tr, self.X_val, self.y_tr, self.y_val = self.create_train_test((self.X_tr, self.y_tr), split_size=0.125)
         self.vocab = self.create_vocab(self.X_tr)
         np.save(dom + '/' + 'vocab.npy', self.vocab)
-        self.X_tr = [[self.getW2Id(self.vocab, w) for w in sent] for sent in self.X_tr]
-        self.X_te = [[self.getW2Id(self.vocab, w) for w in sent] for sent in self.X_te]
-        self.X_val = [[self.getW2Id(self.vocab, w) for w in sent] for sent in self.X_val]
+        self.X_tr = [[self.getW2Id(self.vocab, w) for w in sent] for sent in self.X_tr if isinstance(sent, str)]
+        self.X_te = [[self.getW2Id(self.vocab, w) for w in sent] for sent in self.X_te if isinstance(sent, str)]
+        self.X_val = [[self.getW2Id(self.vocab, w) for w in sent] for sent in self.X_val if isinstance(sent, str)]
         self.train, self.test, self.valid = {}, {}, {}
         self.train['X'] = self.X_tr
         self.train['y'] = self.y_tr

@@ -102,7 +102,7 @@ def run_model(amazon, model, solver):
 
 
 if __name__ == '__main__':
-    domains = ['Toys_Games', 'Tools_Home_Improvement', 'Books', 'Amazon_Instant_Video', 'Movies_TV', 'Video_Games', 'Electronics', 'Health',
+    domains = ['Books', 'Toys_Games', 'Tools_Home_Improvement', 'Amazon_Instant_Video', 'Movies_TV', 'Video_Games', 'Electronics', 'Health',
                'Shoes', 'Baby', 'Automotive', 'Software', 'Sports_Outdoors', 'Clothing_Accessories', 'Beauty', 'Patio', 'Music',
                'Pet_Supplies', 'Office_Products', 'Home_Kitchen']
     word_embeddings = ['embeddings_snap_s256_e15.txt', 'embeddings_snap_s256_e50.txt', 'embeddings_snap_s256_e30.txt', 'embeddings_snap_s512_e15.txt',
