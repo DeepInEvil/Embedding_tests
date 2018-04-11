@@ -9,6 +9,7 @@ import argparse
 from tqdm import tqdm
 import numpy as np
 from sklearn.metrics import accuracy_score
+from sklearn.metrics import roc_auc_score
 
 parser = argparse.ArgumentParser(
     description='Amazon Runner'
@@ -65,8 +66,8 @@ def evaluate(model, dataset):
         output = F.sigmoid(model(review))
 
         scores_o = output.data.cpu() if args.gpu else output.data
-        print (scores_o)
-        acc = acc + (accuracy_score(y.data.cpu().numpy(), scores_o.numpy()))
+        #print (scores_o)
+        acc = acc + (roc_auc_score(y.data.cpu().numpy(), scores_o.numpy()))
         c = c + 1
 
     print(acc / c)
