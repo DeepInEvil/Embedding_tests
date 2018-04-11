@@ -66,7 +66,7 @@ def evaluate(model, dataset):
 
         scores_o = output.cpu() if args.gpu else output
 
-        acc = acc + (accuracy_score(y.cpu(), scores_o))
+        acc = acc + (accuracy_score(y.cpu().numpy(), scores_o.numpy()))
         c = c + 1
 
     print(acc / c)
