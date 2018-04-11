@@ -60,7 +60,6 @@ if __name__ == '__main__':
 
         for it, mb in train_iter:
             review, y = mb
-            print(review, y)
             output = model(review)
 
             loss = F.binary_cross_entropy_with_logits(output, y)

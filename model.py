@@ -22,7 +22,7 @@ class CNN(nn.Module):
         self.conv5 = nn.Conv2d(1, self.n_filter, (5, emb_dim))
 
         self.emb_drop = nn.Dropout(emb_drop)
-        self.M = nn.Parameter(nn.init.xavier_normal(torch.FloatTensor(self.h_dim, self.h_dim)))
+        self.fc = nn.Parameter(nn.init.xavier_normal(torch.FloatTensor(self.h_dim, 1)))
         self.b = nn.Parameter(torch.FloatTensor([0]))
 
         if gpu:
@@ -47,5 +47,6 @@ class CNN(nn.Module):
         x5 = F.max_pool1d(x5, x5.size(2)).squeeze()
 
         out = torch.cat([x3, x4, x5], dim=1)
+        o = torch.mm(out, self.fc) + self.b
 
-        return out
+        return o
