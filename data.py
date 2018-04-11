@@ -47,10 +47,9 @@ class Amazon_loader:
             vec = emb[j].split('\n')[0].strip().split()[1:]
             try:
                 self.vectors[self.vocab[word]] = vec
-            except KeyError:
+            except Exception:
                 continue
-
-        del(emb)
+        del emb
 
     def create_vocab(self, train):
         "create word to id mappings"
