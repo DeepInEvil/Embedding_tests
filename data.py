@@ -58,7 +58,7 @@ class Amazon_loader:
         "create word to id mappings"
         vocab = defaultdict(float)
         for sent in train:
-            if not isinstance(sent, str):
+            if isinstance(sent, float):
                 continue
             else:
                 for w in sent:
