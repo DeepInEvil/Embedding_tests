@@ -65,7 +65,7 @@ def evaluate(model, dataset):
         output = F.sigmoid(model(review))
 
         scores_o = output.data.cpu() if args.gpu else output.data
-
+        print (scores_o)
         acc = acc + (accuracy_score(y.data.cpu().numpy(), scores_o.numpy()))
         c = c + 1
 
