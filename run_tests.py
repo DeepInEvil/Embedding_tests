@@ -8,6 +8,7 @@ from model import CNN
 import argparse
 from tqdm import tqdm
 import numpy as np
+from sklearn.metrics import accuracy_score
 
 parser = argparse.ArgumentParser(
     description='Amazon Runner'
@@ -50,6 +51,27 @@ solver = optim.Adam(model.parameters(), lr=args.lr)
 if args.gpu:
     model.cuda()
 
+
+def evaluate(model, dataset):
+
+    model.eval()
+    data_iter = dataset.get_iter('test')
+
+    acc = 0.0
+    c = 0.0
+
+    for mb in data_iter:
+        review, y = mb
+        output = F.sigmoid(model(review))
+
+        scores_o = output.cpu() if args.gpu else output
+
+        acc = acc + (accuracy_score(y.cpu(), scores_o))
+        c = c + 1
+
+    print(acc / c)
+
+
 if __name__ == '__main__':
     for epoch in range(args.n_epoch):
         print('\n\n-------------------------------------------')
@@ -68,3 +90,10 @@ if __name__ == '__main__':
             #clip_gradient_threshold(model, -10, 10)
             solver.step()
             solver.zero_grad()
+
+            evaluate(model, amazon)
+
+
+
+
+
