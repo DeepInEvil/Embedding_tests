@@ -46,6 +46,7 @@ class Amazon_loader:
             word = emb[j].split(' \n')[0].split()[0]
             vec = emb[j].split(' \n')[0].split()[1:]
             try:
+                print (vec)
                 self.vectors[self.vocab[word]] = vec
             except KeyError:
                 continue
