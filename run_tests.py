@@ -25,7 +25,7 @@ parser.add_argument('--emb_drop', type=float, default=0.3, metavar='',
                     help='embedding dropout (default: 0.3)')
 parser.add_argument('--mb_size', type=int, default=128, metavar='',
                     help='size of minibatch (default: 128)')
-parser.add_argument('--n_epoch', type=int, default=500, metavar='',
+parser.add_argument('--n_epoch', type=int, default=100, metavar='',
                     help='number of iterations (default: 500)')
 parser.add_argument('--randseed', type=int, default=123, metavar='',
                     help='random seed (default: 123)')
@@ -44,6 +44,7 @@ if args.gpu:
 
 max_seq_len = 100
 root_dir = '/data/dchaudhu/ESWC_challenge/'
+
 
 def evaluate(model, dataset, mode):
 
@@ -102,20 +103,24 @@ def run_model(amazon, model, solver):
 
 if __name__ == '__main__':
     domains = ['Toys_Games', 'Tools_Home_Improvement', 'Books', 'Amazon_Instant_Video', 'Movies_TV', 'Video_Games', 'Electronics', 'Health',
-                'Shoes', 'Baby', 'Automotive', 'Software', 'Sports_Outdoors', 'Clothing_Accessories', 'Beauty', 'Patio', 'Music',
-                'Pet_Supplies', 'Office_Products', 'Home_Kitchen']
+               'Shoes', 'Baby', 'Automotive', 'Software', 'Sports_Outdoors', 'Clothing_Accessories', 'Beauty', 'Patio', 'Music',
+               'Pet_Supplies', 'Office_Products', 'Home_Kitchen']
+    word_embeddings = ['embeddings_snap_s256_e15.txt', 'embeddings_snap_s256_e50.txt', 'embeddings_snap_s256_e30.txt', 'embeddings_snap_s512_e15.txt',
+                       'embeddings_snap_s128_e15.txt', 'embeddings_snap_s128_e30.txt', 'embeddings_snap_s128_e50.txt', 'embeddings_snap_s512_e50.txt', 'embeddings_snap_s512_e30.txt']
+
     perf_dict = {}
-    for domain in domains[0:2]:
-        print ("Running model for domain:" + domain)
-        amazon = Amazon_loader(dom=root_dir+domain, emb_file='/data/dchaudhu/ESWC_challenge/Embeddings/embeddings_snap_s128_e15.txt', emb_dim=128)
-        model = CNN(amazon.emb_dim, amazon.vocab_size, h_dim=args.h_dim, pretrained_emb=amazon.vectors, gpu=args.gpu)
+    for emb in word_embeddings:
+        for domain in domains:
+            print ("Running model for domain:" + domain)
+            amazon = Amazon_loader(dom=root_dir+domain, emb_file='/data/dchaudhu/ESWC_challenge/Embeddings/'+emb, emb_dim=128)
+            model = CNN(amazon.emb_dim, amazon.vocab_size, h_dim=args.h_dim, pretrained_emb=amazon.vectors, gpu=args.gpu)
 
-        solver = optim.Adam(model.parameters(), lr=args.lr)
+            solver = optim.Adam(model.parameters(), lr=args.lr)
 
-        if args.gpu:
-            model.cuda()
+            if args.gpu:
+                model.cuda()
 
-        perf_dict[domain] = run_model(amazon, model, solver)
+            perf_dict[domain+':'+emb] = run_model(amazon, model, solver)
 
     print (perf_dict)
 
