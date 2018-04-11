@@ -43,10 +43,9 @@ class Amazon_loader:
         self.vectors = np.zeros((self.vocab_size, self.emb_dim))
 
         for j in range(1, len(emb)):
-            word = emb[j].split(' \n')[0].split()[0]
-            vec = emb[j].split(' \n')[0].split()[1:]
+            word = emb[j].split('\n')[0].strip().split()[0]
+            vec = emb[j].split('\n')[0].strip().split()[1:]
             try:
-                print (vec)
                 self.vectors[self.vocab[word]] = vec
             except KeyError:
                 continue
