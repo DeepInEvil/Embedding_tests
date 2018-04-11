@@ -49,4 +49,4 @@ class CNN(nn.Module):
         out = torch.cat([x3, x4, x5], dim=1)
         o = torch.mm(out, self.fc) + self.b
 
-        return o
+        return o.squeeze()
