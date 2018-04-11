@@ -43,15 +43,7 @@ if args.gpu:
     torch.cuda.manual_seed(args.randseed)
 
 max_seq_len = 100
-
-amazon = Amazon_loader(dom='Toys_Games', emb_file='/data/dchaudhu/ESWC_challenge/Embeddings/embeddings_snap_s128_e15.txt', emb_dim=128)
-model = CNN(amazon.emb_dim, amazon.vocab_size, h_dim=args.h_dim, pretrained_emb=amazon.vectors, gpu=args.gpu)
-
-solver = optim.Adam(model.parameters(), lr=args.lr)
-
-if args.gpu:
-    model.cuda()
-
+root_dir = '/data/dchaudhu/ESWC_challenge/'
 
 def evaluate(model, dataset, mode):
 
@@ -73,7 +65,7 @@ def evaluate(model, dataset, mode):
     return (acc/c)
 
 
-if __name__ == '__main__':
+def run_model(amazon, model, solver):
     early_stop = []
     for epoch in range(args.n_epoch):
         print('\n\n-------------------------------------------')
@@ -105,8 +97,27 @@ if __name__ == '__main__':
 
     acc_test = evaluate(model, amazon, 'test')
     print("Accuracy on test_set:" + str(acc_test))
+    return acc_test
 
 
+if __name__ == '__main__':
+    domains = ['Toys_Games', 'Tools_Home_Improvement', 'Books', 'Amazon_Instant_Video', 'Movies_TV', 'Video_Games', 'Electronics', 'Health',
+                'Shoes', 'Baby', 'Automotive', 'Software', 'Sports_Outdoors', 'Clothing_Accessories', 'Beauty', 'Patio', 'Music',
+                'Pet_Supplies', 'Office_Products', 'Home_Kitchen']
+    perf_dict = {}
+    for domain in domains[0:2]:
+        print ("Running model for domain:" + domain)
+        amazon = Amazon_loader(dom=root_dir+domain, emb_file='/data/dchaudhu/ESWC_challenge/Embeddings/embeddings_snap_s128_e15.txt', emb_dim=128)
+        model = CNN(amazon.emb_dim, amazon.vocab_size, h_dim=args.h_dim, pretrained_emb=amazon.vectors, gpu=args.gpu)
+
+        solver = optim.Adam(model.parameters(), lr=args.lr)
+
+        if args.gpu:
+            model.cuda()
+
+        perf_dict[domain] = run_model(amazon, model, solver)
+
+    print (perf_dict)
 
 
 
