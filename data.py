@@ -39,7 +39,7 @@ class Amazon_loader:
         self.emb_dim = emb_dim
         self.vocab_size = len(self.vocab)
         i2w = {v: k for k, v in self.vocab.items()}
-
+        print (self.vocab_size)
         '''
         if emb_file is not None:
             with open(emb_file, 'r') as f:
