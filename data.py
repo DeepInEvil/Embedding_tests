@@ -25,9 +25,9 @@ class Amazon_loader:
         self.X_tr, self.X_val, self.y_tr, self.y_val = self.create_train_test((self.X_tr, self.y_tr), split_size=0.125)
         self.vocab = self.create_vocab(self.X_tr)
         np.save(dom + '/' + 'vocab.npy', self.vocab)
-        self.X_tr = [[self.getW2Id(self.vocab, w) for w in sent] for sent in self.X_tr if not isinstance(sent, float)]
-        self.X_te = [[self.getW2Id(self.vocab, w) for w in sent] for sent in self.X_te if not isinstance(sent, float)]
-        self.X_val = [[self.getW2Id(self.vocab, w) for w in sent] for sent in self.X_val if not isinstance(sent, float)]
+        self.X_tr = [[self.getW2Id(self.vocab, w) for w in sent.split()] for sent in self.X_tr if not isinstance(sent, float)]
+        self.X_te = [[self.getW2Id(self.vocab, w) for w in sent.split()] for sent in self.X_te if not isinstance(sent, float)]
+        self.X_val = [[self.getW2Id(self.vocab, w) for w in sent.split()] for sent in self.X_val if not isinstance(sent, float)]
         self.train, self.test, self.valid = {}, {}, {}
         self.train['X'] = self.X_tr
         self.train['y'] = self.y_tr
@@ -39,7 +39,7 @@ class Amazon_loader:
         self.emb_dim = emb_dim
         self.vocab_size = len(self.vocab)
         i2w = {v: k for k, v in self.vocab.items()}
-        print (self.vocab)
+        print (self.vocab, self.X_tr[0])
         '''
         if emb_file is not None:
             with open(emb_file, 'r') as f:
@@ -73,7 +73,7 @@ class Amazon_loader:
             if isinstance(sent, float):
                 continue
             else:
-                for w in sent:
+                for w in sent.split():
                     vocab[w] += 1.0
 
         w2i = dict(zip(vocab.keys(), range(1, len(vocab) + 1)))
