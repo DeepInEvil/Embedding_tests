@@ -47,7 +47,7 @@ class Amazon_loader:
         '''
         emb = gensim.models.KeyedVectors.load_word2vec_format('/data/dchaudhu/ESWC_challenge/Embeddings/'
                                                           'GoogleNews-vectors-negative300.bin', binary=True)
-        vectors = np.zeros((self.vocab_size, self.emb_dim))
+        vectors = np.zeros((self.vocab_size + 1, self.emb_dim))
 
         '''
         for j in range(1, len(emb)):
