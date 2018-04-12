@@ -60,7 +60,7 @@ class Amazon_loader:
         '''
         for i in i2w.keys():
             try:
-                self.vectors[i] = emb[i2w[i]]
+                vectors[i] = emb[i2w[i]]
             except KeyError:
                 continue
         del emb
