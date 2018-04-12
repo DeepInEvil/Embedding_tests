@@ -37,9 +37,11 @@ class Amazon_loader:
         self.valid['y'] = self.y_val
 
         self.emb_dim = emb_dim
-        self.vocab_size = len(self.vocab)
+        self.vocab_size = len(self.vocab) + 1
         i2w = {v: k for k, v in self.vocab.items()}
-        print (self.vocab, self.X_tr[0])
+        print (self.X_tr[0])
+        for i in self.X_tr[0]:
+            print (i2w[i])
         '''
         if emb_file is not None:
             with open(emb_file, 'r') as f:
@@ -47,7 +49,7 @@ class Amazon_loader:
         '''
         emb = gensim.models.KeyedVectors.load_word2vec_format('/data/dchaudhu/ESWC_challenge/Embeddings/'
                                                           'GoogleNews-vectors-negative300.bin', binary=True)
-        vectors = np.zeros((self.vocab_size + 1, self.emb_dim))
+        vectors = np.zeros((self.vocab_size, self.emb_dim))
 
         '''
         for j in range(1, len(emb)):
