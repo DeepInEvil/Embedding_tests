@@ -14,8 +14,6 @@ import logging
 logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
 #get stopwords
 stop = stopwords.words('english')
-stop.append('\\)')
-stop.append('\\(')
 
 lda_model = './lda_models/amazon_lda'
 lda_dict = './lda_models/amazon_dict'

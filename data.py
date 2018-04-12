@@ -41,28 +41,39 @@ class Amazon_loader:
         self.vocab_size = len(self.vocab) + 1
         i2w = {v: k for k, v in self.vocab.items()}
 
+        '''
         if emb_file is not None:
             with open(emb_file, 'r') as f:
                 emb = f.readlines()
-
+        '''
         #emb = gensim.models.KeyedVectors.load_word2vec_format('/data/dchaudhu/ESWC_challenge/Embeddings/'
         #                                                  'GoogleNews-vectors-negative300.bin', binary=True)
         vectors = np.zeros((self.vocab_size, self.emb_dim))
+        emb = pd.read_csv('/data/dchaudhu/ESWC_challenge/Embeddings/sentic2vec.csv', encoding="cp1252")
 
+        '''
         for j in range(1, len(emb)):
             word = emb[j].split('\n')[0].strip().split()[0]
             vec = emb[j].split('\n')[0].strip().split()[1:]
             try:
-                self.vectors[self.vocab[word]] = vec
+                vectors[self.vocab[word]] = vec
             except Exception:
                 continue
-        '''
+
         for i in i2w.keys():
             try:
                 vectors[i] = emb[i2w[i]]
             except KeyError:
                 continue
         '''
+        for j in range(len(emb)):
+            word = emb[j][0]
+            vec = emb[j][1:]
+            try:
+                vectors[self.vocab[word]] = vec
+            except Exception:
+                continue
+
         del emb
         self.vectors = torch.from_numpy(vectors.astype(np.float32))
 
