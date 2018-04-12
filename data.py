@@ -5,13 +5,15 @@ from collections import defaultdict
 from sklearn.model_selection import train_test_split
 import torch
 from torch.autograd import Variable
+import gensim
 
 
 class Amazon_loader:
     '''
     For loading amazon words
     '''
-    def __init__(self, dom='Home_Kitchen', positive='positive.tsv', negative='negative.tsv', batch_size=64, max_seq_len=100, gpu=True, emb_file=None, emb_dim=100):
+    def __init__(self, dom='Home_Kitchen', positive='positive.tsv', negative='negative.tsv', batch_size=64,
+                 max_seq_len=100, gpu=True, emb_file=None, emb_dim=100):
         self.batch_size = batch_size
         self.max_seq_len = max_seq_len
         self.gpu = gpu
@@ -36,13 +38,18 @@ class Amazon_loader:
 
         self.emb_dim = emb_dim
         self.vocab_size = len(self.vocab)
+        i2w = {v: k for k, v in self.vocab.items()}
 
+        '''
         if emb_file is not None:
             with open(emb_file, 'r') as f:
                 emb = f.readlines()
-
+        '''
+        emb = gensim.models.Word2Vec.load_word2vec_format('/data/dchaudhu/ESWC_challenge/Embeddings/'
+                                                          'GoogleNews-vectors-negative300.bin', binary=True)
         vectors = np.zeros((self.vocab_size, self.emb_dim))
 
+        '''
         for j in range(1, len(emb)):
             word = emb[j].split('\n')[0].strip().split()[0]
             vec = emb[j].split('\n')[0].strip().split()[1:]
@@ -50,7 +57,12 @@ class Amazon_loader:
                 self.vectors[self.vocab[word]] = vec
             except Exception:
                 continue
-
+        '''
+        for i in i2w.keys():
+            try:
+                self.vectors[i] = emb[i2w[i]]
+            except KeyError:
+                continue
         del emb
         self.vectors = torch.from_numpy(vectors.astype(np.float32))
 

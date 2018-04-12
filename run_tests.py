@@ -109,21 +109,20 @@ if __name__ == '__main__':
                        'embeddings_snap_s128_e15.txt', 'embeddings_snap_s128_e30.txt', 'embeddings_snap_s128_e50.txt', 'embeddings_snap_s512_e50.txt', 'embeddings_snap_s512_e30.txt']
 
     perf_dict = {}
-    for emb in word_embeddings:
-        for domain in domains:
-            print ("Running model for domain:" + domain)
-            emb_dim = int(emb.split('_')[2].split('s')[1])
-            amazon = Amazon_loader(dom=root_dir+domain, emb_file='/data/dchaudhu/ESWC_challenge/Embeddings/'+emb,
-                                   emb_dim=emb_dim)
-            model = CNN(amazon.emb_dim, amazon.vocab_size, h_dim=args.h_dim, pretrained_emb=amazon.vectors,
-                        gpu=args.gpu)
+    #for emb in word_embeddings:
+    for domain in domains:
+        print ("Running model for domain:" + domain)
+        #emb_dim = int(emb.split('_')[2].split('s')[1])
+        amazon = Amazon_loader(dom=root_dir+domain, emb_dim=300)
+        model = CNN(amazon.emb_dim, amazon.vocab_size, h_dim=args.h_dim, pretrained_emb=amazon.vectors,
+                    gpu=args.gpu)
 
-            solver = optim.Adam(model.parameters(), lr=args.lr)
+        solver = optim.Adam(model.parameters(), lr=args.lr)
 
-            if args.gpu:
-                model.cuda()
+        if args.gpu:
+            model.cuda()
 
-            perf_dict[domain+':'+emb] = run_model(amazon, model, solver)
+        perf_dict[domain+':'+'Google'] = run_model(amazon, model, solver)
 
     print (perf_dict)
 
