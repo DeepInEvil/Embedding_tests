@@ -58,6 +58,7 @@ class Amazon_loader:
                 else:
                     continue
             np.save(emb_dir+emb_d_f, emb_vec)
+            del emb
             print('Saving embedding dictionary')
 
         #emb = gensim.models.KeyedVectors.load_word2vec_format('/data/dchaudhu/ESWC_challenge/Embeddings/'
@@ -81,7 +82,7 @@ class Amazon_loader:
             except Exception:
                 continue
         '''
-        del emb
+        del emb_vec
         self.vectors = torch.from_numpy(vectors.astype(np.float32))
 
     def create_vocab(self, train):
