@@ -54,15 +54,17 @@ class Amazon_loader:
         for j in range(1, len(emb)):
             word = emb[j].split('\n')[0].strip().split()[0]
             vec = emb[j].split('\n')[0].strip().split()[1:]
-            try:
+            #try:
+            if len(vec) == self.emb_dim:
                 emb_vec[word] = vec
-            except Exception:
+            else:
                 continue
+
         print (len(emb_vec))
         for i in i2w.keys():
             try:
                 vectors[i] = emb_vec[i2w[i]]
-            except Exception:
+            except KeyError:
                 continue
 
         print(i, self.vocab[i], vectors[i], emb_vec[self.vocab[i]])
