@@ -16,8 +16,8 @@ it = 0
 perf_dict = defaultdict(list)
 for i, emb in enumerate(word_embeddings):
     for j, domain in enumerate(domains):
+        perf = perfs[it].replace('\n', '').strip().split(':')[-1][0:5]
         it = it + 1
-        perf = perfs[it].replace('\n', '').strip()
         perf_dict[domain].append(perf)
 
 for dom in domains:
