@@ -44,6 +44,7 @@ class Amazon_loader:
 
         emb_d_f = emb_file.split('.')[0] + '.npy'
         if os.path.exists(emb_dir+emb_d_f):
+            print ('loading the embeddng dictionary from file')
             emb_vec = np.load(emb_dir+emb_d_f).item()
         else:
             emb_vec = {}
