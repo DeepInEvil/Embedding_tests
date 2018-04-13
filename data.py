@@ -62,7 +62,7 @@ class Amazon_loader:
         for i in i2w.keys():
             try:
                 vectors[i] = emb_vec[i2w[i]]
-            except KeyError:
+            except Exception:
                 continue
 
         print(i, self.vocab[i], vectors[i], emb_vec[self.vocab[i]])
