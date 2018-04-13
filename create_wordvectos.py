@@ -8,10 +8,11 @@ word_embeddings = ['embeddings_snap_s512_e15.txt',
 
 for emb_file in word_embeddings:
     emb_d_f = emb_file.split('.')[0] + '.npy'
-    emb_dim = int(emb.split('_')[2].split('s')[1])
+    emb_dim = int(emb_file.split('_')[2].split('s')[1])
     emb_vec = {}
     with open(emb_dir + emb_file, 'r') as f:
         emb = f.readlines()
+    print ("Loadded the vector, creating the dictionary.....")
     for j in range(1, len(emb)):
         word = emb[j].split('\n')[0].strip().split()[0]
         vec = emb[j].split('\n')[0].strip().split()[1:]
