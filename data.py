@@ -67,7 +67,7 @@ class Amazon_loader:
             except KeyError:
                 continue
 
-        print(i, self.vocab[i], vectors[i], emb_vec[self.vocab[i]])
+        print(20, self.vocab[20], vectors[20], emb_vec[self.vocab[20]])
         '''
         for j in range(len(emb)):
             word = emb[j][0]
