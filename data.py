@@ -40,11 +40,11 @@ class Amazon_loader:
 
         self.emb_dim = emb_dim
         self.vocab_size = len(self.vocab) + 1
-        i2w = {v: k for k, v in self.vocab.item()}
+        i2w = {v: k for k, v in self.vocab.items()}
 
         emb_d_f = emb_file.split('.')[0] + '.npy'
         if os.path.exists(emb_dir+emb_d_f):
-            emb_vec = np.load(emb_dir+emb_d_f)
+            emb_vec = np.load(emb_dir+emb_d_f).item()
         else:
             emb_vec = {}
             with open(emb_dir+emb_file, 'r') as f:
