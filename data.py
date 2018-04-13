@@ -6,7 +6,8 @@ from sklearn.model_selection import train_test_split
 import torch
 from torch.autograd import Variable
 import gensim
-
+import os
+emb_dir = '/data/dchaudhu/ESWC_challenge/Embeddings/'
 
 class Amazon_loader:
     '''
@@ -39,35 +40,38 @@ class Amazon_loader:
 
         self.emb_dim = emb_dim
         self.vocab_size = len(self.vocab) + 1
-        i2w = {v: k for k, v in self.vocab.items()}
+        i2w = {v: k for k, v in self.vocab.item()}
 
-        if emb_file is not None:
-            with open(emb_file, 'r') as f:
+        emb_d_f = emb_file.split('.')[0] + '.npy'
+        if os.path.exists(emb_dir+emb_d_f):
+            emb_vec = np.load(emb_dir+emb_d_f)
+        else:
+            emb_vec = {}
+            with open(emb_dir+emb_file, 'r') as f:
                 emb = f.readlines()
+            for j in range(1, len(emb)):
+                word = emb[j].split('\n')[0].strip().split()[0]
+                vec = emb[j].split('\n')[0].strip().split()[1:]
+                #try:
+                if len(vec) == self.emb_dim:
+                    emb_vec[word] = vec
+                else:
+                    continue
+            np.save(emb_dir+emb_d_f, emb_vec)
+            print('Saving embedding dictionary')
 
         #emb = gensim.models.KeyedVectors.load_word2vec_format('/data/dchaudhu/ESWC_challenge/Embeddings/'
         #                                                  'GoogleNews-vectors-negative300.bin', binary=True)
         vectors = np.zeros((self.vocab_size, self.emb_dim))
         #emb = np.array(pd.read_csv('/data/dchaudhu/ESWC_challenge/Embeddings/sentic2vec.csv', encoding="cp1252"))
 
-        emb_vec = {}
-        for j in range(1, len(emb)):
-            word = emb[j].split('\n')[0].strip().split()[0]
-            vec = emb[j].split('\n')[0].strip().split()[1:]
-            #try:
-            if len(vec) == self.emb_dim:
-                emb_vec[word] = vec
-            else:
-                continue
-
-        print (len(emb_vec))
         for i in i2w.keys():
             try:
                 vectors[i] = emb_vec[i2w[i]]
             except KeyError:
                 continue
 
-        print(self.vocab['video'], vectors[self.vocab['video']], emb_vec['video'])
+        #print(self.vocab['video'], vectors[self.vocab['video']], emb_vec['video'])
         '''
         for j in range(len(emb)):
             word = emb[j][0]
