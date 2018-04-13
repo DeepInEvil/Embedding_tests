@@ -16,7 +16,10 @@ for emb_file in word_embeddings:
     print ("Loadded the vector, creating the dictionary.....")
     for j in range(1, len(emb)):
         word = emb[j].split('\n')[0].strip().split()[0]
-        vec = np.array(emb[j].split('\n')[0].strip().split()[1:]).astype(np.float32)
+        try:
+            vec = np.array(emb[j].split('\n')[0].strip().split()[1:]).astype(np.float32)
+        except ValueError:
+            continue
         # try:
         if len(vec) == emb_dim:
             emb_vec[word] = vec
