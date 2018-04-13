@@ -21,6 +21,6 @@ for i, emb in enumerate(word_embeddings):
         perf_dict[domain].append(perf)
 
 for dom in domains:
-    print ('&'.join(perf_dict[dom]))
+    print (dom + ':' +'&'.join(perf_dict[dom]))
 
 
