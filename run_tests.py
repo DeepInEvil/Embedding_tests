@@ -15,7 +15,7 @@ parser = argparse.ArgumentParser(
     description='Amazon Runner'
 )
 
-parser.add_argument('--gpu', default=False, action='store_true',
+parser.add_argument('--gpu', default=True, action='store_true',
                     help='whether to run in the GPU')
 parser.add_argument('--h_dim', type=int, default=100, metavar='',
                     help='hidden dimension (default: 100)')
