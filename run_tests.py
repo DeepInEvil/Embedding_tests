@@ -109,9 +109,9 @@ def run_model(amazon, model, solver):
         else:
             early_stop.append(acc)
 
-    acc_test = evaluate(model, amazon, 'test')
-    print("Accuracy on test_set:" + str(acc_test))
-    return acc_test
+    #acc_test = evaluate(model, amazon, 'valid')
+    #print("Accuracy on test_set:" + str(acc_test))
+    return acc
 
 
 if __name__ == '__main__':

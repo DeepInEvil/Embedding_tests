@@ -113,25 +113,33 @@ class Amazon_loader:
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=split_size, random_state=42, shuffle=True)
         return X_train, X_test, y_train, y_test
 
-    def get_iter(self, dataset='train'):
-        if dataset == 'train':
+    def get_iter(self, mode='train'):
+        if mode == 'train':
             dataset = self.train
-        elif dataset == 'test':
+        elif mode == 'test':
             dataset = self.test
-        elif dataset == 'valid':
+        elif mode == 'valid':
             dataset = self.valid
 
-        for i in range(0, len(dataset['y']), self.batch_size):
-            reviews = dataset['X'][i:i+self.batch_size]
-            y = dataset['y'][i:i+self.batch_size]
+        if mode not in 'test':
+            for i in range(0, len(dataset['y']), self.batch_size):
+                reviews = dataset['X'][i:i+self.batch_size]
+                y = dataset['y'][i:i+self.batch_size]
 
-            reviews, y = self._load_batch(reviews, y, self.batch_size)
-            if dataset not in 'test':
+                reviews, y = self._load_batch(reviews, y, self.batch_size)
+
                 yield reviews, y
-            else:
+        else:
+            for i in range(0, len(dataset['x']), self.batch_size):
+                reviews = dataset['X'][i:i + self.batch_size]
+                #y = dataset['y'][i:i + self.batch_size]
+
+                reviews, y = self._load_batch(reviews, self.batch_size)
+
                 yield reviews
 
-    def _load_batch(self, reviews, y, size, test=False):
+
+    def _load_batch(self, reviews, y=None, size=32, test=False):
         review_arr = np.zeros([size, self.max_seq_len], np.int)
         y_arr = np.zeros(size, np.float32)
 
