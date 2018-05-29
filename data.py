@@ -32,6 +32,7 @@ class Amazon_loader:
         else:
             self.vocab = self.create_vocab(self.X_tr)
             np.save(home + 'vocab.npy', self.vocab)
+            print("Created vocabulary of size:" + str(len(self.vocab.keys())))
         #print (self.X_tr[0])
         self.X_tr = [[self.getW2Id(self.vocab, w) for w in sent.split()] for sent in self.X_tr if not isinstance(sent, float)]
         self.X_te = [[self.getW2Id(self.vocab, w) for w in sent.split()] for sent in self.X_te if not isinstance(sent, float)]
