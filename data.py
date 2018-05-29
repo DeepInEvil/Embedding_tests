@@ -147,23 +147,31 @@ class Amazon_loader:
 
                 yield reviews
 
-
     def _load_batch(self, reviews, y=None, size=32, test=False):
         review_arr = np.zeros([size, self.max_seq_len], np.int)
         y_arr = np.zeros(size, np.float32)
 
-        for j, (rvw, y_r) in enumerate(zip(reviews, y)):
-            rvw = rvw[:self.max_seq_len]
-            review_arr[j, :len(rvw)] = rvw
-            y_arr[j] = float(y_r)
-
-        review = Variable(torch.from_numpy(review_arr))
-        y = Variable(torch.from_numpy(y_arr))
-
-        if self.gpu:
-            review, y = review.cuda(), y.cuda()
-
         if not test:
+            for j, (rvw, y_r) in enumerate(zip(reviews, y)):
+                rvw = rvw[:self.max_seq_len]
+                review_arr[j, :len(rvw)] = rvw
+                y_arr[j] = float(y_r)
+
+            review = Variable(torch.from_numpy(review_arr))
+            y = Variable(torch.from_numpy(y_arr))
+
+            if self.gpu:
+                review, y = review.cuda(), y.cuda()
             return review, y
         else:
+            for j, rvw in enumerate(reviews):
+                rvw = rvw[:self.max_seq_len]
+                review_arr[j, :len(rvw)] = rvw
+                #y_arr[j] = float(y_r)
+
+            review = Variable(torch.from_numpy(review_arr))
+            #y = Variable(torch.from_numpy(y_arr))
+
+            if self.gpu:
+                review = review.cuda()
             return review
