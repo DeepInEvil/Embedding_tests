@@ -28,13 +28,15 @@ if __name__ == '__main__':
     main_dir = '/data/dchaudhu/ESWC_challenge/'
     #done_process = ['Toys_Games', 'Tools_Home_Improvement', 'Books', 'Amazon_Instant_Video', 'Movies_TV', 'Video_Games', 'Electronics', 'Health', 'Shoes', 'Baby', 'Automotive', 'Software', 'Sports_Outdoors']
     all_reviews = open('reviews.txt', 'w')
+    pos = open(main_dir + 'data' + '/' + 'positive.tsv', 'w')
+    neg = open(main_dir + 'data' + '/' + 'negative.tsv', 'w')
     domains = [d for d in os.listdir(main_dir) if os.path.isdir(d)]
     for domain in domains:
             print ("Processing data from domain:" + domain)
             dom_dir = main_dir+domain
             xmls = os.listdir(dom_dir)
-            pos = open(dom_dir+'/'+'positive.tsv', 'w')
-            neg = open(dom_dir+'/'+'negative.tsv', 'w')
+            #pos = open(dom_dir+'/'+'positive.tsv', 'w')
+            #neg = open(dom_dir+'/'+'negative.tsv', 'w')
             for xm in xmls:
                 print ('Processing data for file:' + xm)
                 tree = ET.parse(dom_dir + '/' + xm)
@@ -42,11 +44,11 @@ if __name__ == '__main__':
                 if 'neg' in xm:
                     for ele in root:
                         neg.write(ele.attrib['id'] + ', ' + clean_str(ele[3].text) + '\n')
-                        all_reviews.write(clean_str(ele[3].text) + '\n')
+                        #all_reviews.write(clean_str(ele[3].text) + '\n')
                 else:
                     for ele in root:
                         pos.write(ele.attrib['id'] + ', ' + clean_str(ele[3].text) + '\n')
-                        all_reviews.write(clean_str(ele[3].text) + '\n')
+                        #all_reviews.write(clean_str(ele[3].text) + '\n')
             neg.close()
             pos.close()
 
