@@ -25,8 +25,13 @@ class Amazon_loader:
         self.X_te = np.array(pd.read_table(home+'test.tsv', sep='\t', header=None)[1])
         self.X_tr, self.X_val, self.y_tr, self.y_val = self.create_train_test((self.dat, self.y), split_size=0.1)
         #self.X_tr, self.X_val, self.y_tr, self.y_val = self.create_train_test((self.X_tr, self.y_tr), split_size=0.125)
-        self.vocab = self.create_vocab(self.X_tr)
-        np.save(home + 'vocab.npy', self.vocab)
+
+        if (os.path.exists(home+'vocab.npy')):
+            self.vocab = np.load(home+'vocab.npy').item()
+            print ("Loaded the vocabulary of size:" + str(len(self.vocab.keys())))
+        else:
+            self.vocab = self.create_vocab(self.X_tr)
+            np.save(home + 'vocab.npy', self.vocab)
         #print (self.X_tr[0])
         self.X_tr = [[self.getW2Id(self.vocab, w) for w in sent.split()] for sent in self.X_tr if not isinstance(sent, float)]
         self.X_te = [[self.getW2Id(self.vocab, w) for w in sent.split()] for sent in self.X_te if not isinstance(sent, float)]
