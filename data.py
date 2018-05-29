@@ -94,14 +94,17 @@ class Amazon_loader:
     def create_vocab(self, train):
         "create word to id mappings"
         vocab = defaultdict(float)
+        out_vocab = []
         for sent in train:
             if isinstance(sent, float):
                 continue
             else:
                 for w in sent.split():
                     vocab[w] += 1.0
-
-        w2i = dict(zip(vocab.keys(), range(1, len(vocab) + 1)))
+        for k, v in vocab.items():
+            if v > 5.0:
+                out_vocab.append(k)
+        w2i = dict(zip(out_vocab, range(1, len(out_vocab) + 1)))
         w2i['UNK'] = len(w2i) + 1
         return w2i
 
