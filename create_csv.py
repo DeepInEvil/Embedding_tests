@@ -49,7 +49,7 @@ if __name__ == '__main__':
                     for ele in root:
                         pos.write(ele.attrib['id'] + ', ' + clean_str(ele[3].text) + '\n')
                         #all_reviews.write(clean_str(ele[3].text) + '\n')
-            neg.close()
-            pos.close()
+    neg.close()
+    pos.close()
 
-    all_reviews.close()
+    #all_reviews.close()
