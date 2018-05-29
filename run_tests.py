@@ -101,9 +101,9 @@ def run_model(amazon, model, solver):
 
         acc = evaluate(model, amazon, 'valid')
         print("Accuracy after epoch:" + str(epoch) + " is " + str(acc))
-        if len(early_stop) < 7:
+        if len(early_stop) < 9:
             early_stop.append(acc)
-        elif acc < np.max(early_stop[-7:]):
+        elif acc < np.max(early_stop[-9:]):
             print("Exiting training......")
             break
         else:

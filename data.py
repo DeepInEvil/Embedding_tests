@@ -139,7 +139,7 @@ class Amazon_loader:
 
                 yield reviews, y
         else:
-            for i in range(0, len(dataset['x']), self.batch_size):
+            for i in range(0, len(dataset['X']), self.batch_size):
                 reviews = dataset['X'][i:i + self.batch_size]
                 #y = dataset['y'][i:i + self.batch_size]
 
