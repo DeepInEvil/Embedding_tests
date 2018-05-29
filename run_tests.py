@@ -23,12 +23,12 @@ parser.add_argument('--lr', type=float, default=1e-3, metavar='',
                     help='learning rate (default: 1e-3)')
 parser.add_argument('--emb_drop', type=float, default=0.3, metavar='',
                     help='embedding dropout (default: 0.3)')
-parser.add_argument('--mb_size', type=int, default=128, metavar='',
+parser.add_argument('--mb_size', type=int, default=64, metavar='',
                     help='size of minibatch (default: 128)')
-parser.add_argument('--n_epoch', type=int, default=100, metavar='',
+parser.add_argument('--n_epoch', type=int, default=30, metavar='',
                     help='number of iterations (default: 500)')
-parser.add_argument('--randseed', type=int, default=123, metavar='',
-                    help='random seed (default: 123)')
+parser.add_argument('--randseed', type=int, default=666, metavar='',
+                    help='random seed (default: 666)')
 parser.add_argument('--no_tqdm', default=False, action='store_true',
                     help='disable tqdm progress bar')
 
