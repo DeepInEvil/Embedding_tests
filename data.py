@@ -141,37 +141,25 @@ class Amazon_loader:
         else:
             for i in range(0, len(dataset['X']), self.batch_size):
                 reviews = dataset['X'][i:i + self.batch_size]
-                #y = dataset['y'][i:i + self.batch_size]
+                y = np.zeros(reviews.shape)
 
-                reviews, y = self._load_batch(reviews, self.batch_size, test=True)
+                reviews, y = self._load_batch(reviews, y, self.batch_size)
 
                 yield reviews
 
-    def _load_batch(self, reviews, y=None, size=32, test=False):
+    def _load_batch(self, reviews, y=None, size=32):
         review_arr = np.zeros([size, self.max_seq_len], np.int)
         y_arr = np.zeros(size, np.float32)
 
-        if not test:
-            for j, (rvw, y_r) in enumerate(zip(reviews, y)):
-                rvw = rvw[:self.max_seq_len]
-                review_arr[j, :len(rvw)] = rvw
-                y_arr[j] = float(y_r)
+        for j, (rvw, y_r) in enumerate(zip(reviews, y)):
+            rvw = rvw[:self.max_seq_len]
+            review_arr[j, :len(rvw)] = rvw
+            y_arr[j] = float(y_r)
 
-            review = Variable(torch.from_numpy(review_arr))
-            y = Variable(torch.from_numpy(y_arr))
+        review = Variable(torch.from_numpy(review_arr))
+        y = Variable(torch.from_numpy(y_arr))
 
-            if self.gpu:
-                review, y = review.cuda(), y.cuda()
-            return review, y
-        else:
-            for j, rvw in enumerate(reviews):
-                rvw = rvw[:self.max_seq_len]
-                review_arr[j, :len(rvw)] = rvw
-                #y_arr[j] = float(y_r)
+        if self.gpu:
+            review, y = review.cuda(), y.cuda()
+        return review, y
 
-            review = Variable(torch.from_numpy(review_arr))
-            #y = Variable(torch.from_numpy(y_arr))
-
-            if self.gpu:
-                review = review.cuda()
-            return review
