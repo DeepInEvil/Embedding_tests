@@ -44,6 +44,8 @@ if args.gpu:
 
 max_seq_len = 100
 root_dir = '/data/dchaudhu/ESWC_challenge/'
+lda_model = root_dir + 'lda_models/amazon_lda'
+lda_dict = root_dir + '/lda_models/amazon_dict'
 
 
 def evaluate(model, dataset, mode):
@@ -64,6 +66,17 @@ def evaluate(model, dataset, mode):
         c = c + 1
 
     return (acc/c)
+
+
+def test(model, dataset, mode='test'):
+    model.eval()
+    data_iter = dataset.get_iter(mode)
+    test_scores = []
+    for mb in data_iter:
+        review = mb
+        output = F.sigmoid(model(review))
+        test_scores.append(output.cpu().data.numpy())
+    return (np.concatenate(test_scores))
 
 
 def run_model(amazon, model, solver):
@@ -105,29 +118,30 @@ if __name__ == '__main__':
     domains = ['Video_Games', 'Books', 'Toys_Games', 'Tools_Home_Improvement', 'Amazon_Instant_Video', 'Movies_TV', 'Electronics', 'Health',
                'Shoes', 'Baby', 'Automotive', 'Software', 'Sports_Outdoors', 'Clothing_Accessories', 'Beauty', 'Patio', 'Music',
                'Pet_Supplies', 'Office_Products', 'Home_Kitchen']
-    #word_embeddings = ['embeddings_snap_s256_e15.txt', 'embeddings_snap_s256_e50.txt', 'embeddings_snap_s256_e30.txt',
-                         # 'embeddings_snap_s512_e15.txt', 'embeddings_snap_s128_e15.txt', 'embeddings_snap_s128_e30.txt',
-                         # 'embeddings_snap_s128_e50.txt', 'embeddings_snap_s512_e50.txt', 'embeddings_snap_s512_e30.txt']
-    word_embeddings = ['embeddings_snap_s512_e15.txt', 'embeddings_snap_s128_e15.txt', 'embeddings_snap_s128_e30.txt',
-                       'embeddings_snap_s128_e50.txt', 'embeddings_snap_s512_e50.txt', 'embeddings_snap_s512_e30.txt']
+    word_embeddings = ['embeddings_snap_s256_e15.txt', 'embeddings_snap_s256_e50.txt', 'embeddings_snap_s256_e30.txt',
+                         'embeddings_snap_s512_e15.txt', 'embeddings_snap_s128_e15.txt', 'embeddings_snap_s128_e30.txt',
+                         'embeddings_snap_s128_e50.txt', 'embeddings_snap_s512_e50.txt', 'embeddings_snap_s512_e30.txt']
+    # word_embeddings = ['embeddings_snap_s512_e15.txt', 'embeddings_snap_s128_e15.txt', 'embeddings_snap_s128_e30.txt',
+    #                    'embeddings_snap_s128_e50.txt', 'embeddings_snap_s512_e50.txt', 'embeddings_snap_s512_e30.txt']
 
     perf_dict = {}
     for emb in word_embeddings:
-        for domain in domains:
-            print ("Running model for domain:" + domain)
-            emb_dim = int(emb.split('_')[2].split('s')[1])
-            amazon = Amazon_loader(dom=root_dir+domain,emb_file=emb, emb_dim=emb_dim)
-            #amazon = Amazon_loader(dom=root_dir+domain, emb_dim=300)
-            model = CNN(amazon.emb_dim, amazon.vocab_size, h_dim=args.h_dim, pretrained_emb=amazon.vectors,
-                        gpu=args.gpu)
 
-            solver = optim.Adam(model.parameters(), lr=args.lr)
+        print ("Running model for embedding" + str(emb))
+        emb_dim = int(emb.split('_')[2].split('s')[1])
+        amazon = Amazon_loader(emb_file=emb, emb_dim=emb_dim)
+        #amazon = Amazon_loader(dom=root_dir+domain, emb_dim=300)
+        model = CNN(amazon.emb_dim, amazon.vocab_size, h_dim=args.h_dim, pretrained_emb=amazon.vectors,
+                    gpu=args.gpu)
 
-            if args.gpu:
-                model.cuda()
+        solver = optim.Adam(model.parameters(), lr=args.lr)
 
-            perf_dict[domain+':'+'amazonWE'] = run_model(amazon, model, solver)
+        if args.gpu:
+            model.cuda()
 
+        perf_dict[emb+':'+'amazonWE'] = run_model(amazon, model, solver)
+        test_out = test(model, amazon)
+        np.save(root_dir + 'test_out'+emb+'npy', test_out)
     for k, v in perf_dict.items():
         print (k, v)
         print ("===============")

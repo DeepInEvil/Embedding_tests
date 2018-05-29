@@ -13,19 +13,20 @@ class Amazon_loader:
     '''
     For loading amazon words
     '''
-    def __init__(self, dom='Home_Kitchen', positive='positive.tsv', negative='negative.tsv', batch_size=64,
+    def __init__(self, home='/data/dchaudhu/ESWC_challenge/data/', positive='positive.tsv', negative='negative.tsv', batch_size=64,
                  max_seq_len=100, gpu=True, emb_file=None, emb_dim=100):
         self.batch_size = batch_size
         self.max_seq_len = max_seq_len
         self.gpu = gpu
-        self.pos = np.array(pd.read_table(dom + '/' + positive, sep = '\t', header=None)[1])
-        self.neg = np.array(pd.read_table(dom + '/' + negative, sep = '\t', header=None)[1])
+        self.pos = np.array(pd.read_table(home + positive, sep='\t', header=None)[1])
+        self.neg = np.array(pd.read_table(home + negative, sep='\t', header=None)[1])
         self.dat = np.concatenate((self.pos, self.neg))
-        self.y = np.concatenate((np.ones(25000), np.zeros(25000)))
-        self.X_tr, self.X_te, self.y_tr, self.y_te = self.create_train_test((self.dat, self.y), split_size=0.2)
-        self.X_tr, self.X_val, self.y_tr, self.y_val = self.create_train_test((self.X_tr, self.y_tr), split_size=0.125)
+        self.y = np.concatenate((np.ones(500000), np.zeros(500000)))
+        self.X_te = np.array(pd.read_table(home+'test.tsv', sep='\t', header=None)[1])
+        self.X_tr, self.X_val, self.y_tr, self.y_val = self.create_train_test((self.dat, self.y), split_size=0.1)
+        #self.X_tr, self.X_val, self.y_tr, self.y_val = self.create_train_test((self.X_tr, self.y_tr), split_size=0.125)
         self.vocab = self.create_vocab(self.X_tr)
-        np.save(dom + '/' + 'vocab.npy', self.vocab)
+        np.save(home + 'vocab.npy', self.vocab)
         #print (self.X_tr[0])
         self.X_tr = [[self.getW2Id(self.vocab, w) for w in sent.split()] for sent in self.X_tr if not isinstance(sent, float)]
         self.X_te = [[self.getW2Id(self.vocab, w) for w in sent.split()] for sent in self.X_te if not isinstance(sent, float)]
@@ -34,7 +35,6 @@ class Amazon_loader:
         self.train['X'] = self.X_tr
         self.train['y'] = self.y_tr
         self.test['X'] = self.X_te
-        self.test['y'] = self.y_te
         self.valid['X'] = self.X_val
         self.valid['y'] = self.y_val
 
@@ -126,10 +126,12 @@ class Amazon_loader:
             y = dataset['y'][i:i+self.batch_size]
 
             reviews, y = self._load_batch(reviews, y, self.batch_size)
+            if dataset not in 'test':
+                yield reviews, y
+            else:
+                yield reviews
 
-            yield reviews, y
-
-    def _load_batch(self, reviews, y, size):
+    def _load_batch(self, reviews, y, size, test=False):
         review_arr = np.zeros([size, self.max_seq_len], np.int)
         y_arr = np.zeros(size, np.float32)
 
@@ -144,4 +146,7 @@ class Amazon_loader:
         if self.gpu:
             review, y = review.cuda(), y.cuda()
 
-        return review, y
+        if not test:
+            return review, y
+        else:
+            return review
