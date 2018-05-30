@@ -139,7 +139,7 @@ def run_model(amazon, model, solver):
         for it, mb in train_iter:
             review, y = mb
             topic = Variable(get_theta(review, lda_model, lda_dict, i2w)).cuda()
-            print (topic.size())
+            #print (topic.size())
             output = model(review, topic)
 
             loss = F.binary_cross_entropy_with_logits(output, y)
