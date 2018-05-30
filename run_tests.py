@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-import torch.autograd as autograd
+from torch.autograd import Variable
 import torch.optim as optim
 from data import Amazon_loader
 from model import CNN
@@ -104,7 +104,7 @@ def evaluate(model, dataset, mode):
 
     for mb in data_iter:
         review, y = mb
-        topic = get_theta(review, lda_model, lda_dict, i2w).cuda()
+        topic = Variable(get_theta(review, lda_model, lda_dict, i2w)).cuda()
         output = F.sigmoid(model(review, topic))
 
         scores_o = output.data.cpu() if args.gpu else output.data
@@ -121,7 +121,7 @@ def test(model, dataset, mode='test'):
     test_scores = []
     for mb in data_iter:
         review = mb
-        topic = get_theta(review, lda_model, lda_dict, i2w).cuda()
+        topic = Variable(get_theta(review, lda_model, lda_dict, i2w)).cuda()
         output = F.sigmoid(model(review, topic))
         test_scores.append(output.cpu().data.numpy())
     return (np.concatenate(test_scores))
@@ -138,7 +138,8 @@ def run_model(amazon, model, solver):
 
         for it, mb in train_iter:
             review, y = mb
-            topic = get_theta(review, lda_model, lda_dict, i2w).cuda()
+            topic = Variable(get_theta(review, lda_model, lda_dict, i2w)).cuda()
+            print (topic.size())
             output = model(review, topic)
 
             loss = F.binary_cross_entropy_with_logits(output, y)
