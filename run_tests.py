@@ -10,6 +10,9 @@ from tqdm import tqdm
 import numpy as np
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import roc_auc_score
+from gensim import models
+import gensim
+
 
 parser = argparse.ArgumentParser(
     description='Amazon Runner'
@@ -44,8 +47,51 @@ if args.gpu:
 
 max_seq_len = 100
 root_dir = '/data/dchaudhu/ESWC_challenge/'
-lda_model = root_dir + 'lda_models/amazon_lda'
-lda_dict = root_dir + '/lda_models/amazon_dict'
+lda_model = models.LdaModel.load(root_dir + 'lda_models/amazon_lda')
+lda_dict =  gensim.corpora.Dictionary.load(root_dir + '/lda_models/amazon_dict')
+w2i = np.load(root_dir+'/data/vocab.npy').item()
+i2w = {v: k for k, v in w2i.items()}
+
+
+def get_id2word(idx, idx2w_dict):
+    """
+    get id2word mappings
+    :param idx:
+    :param idx2w_dict:
+    :return:
+    """
+    try:
+        return idx2w_dict[idx]
+    except KeyError:
+        return 'UNK'
+
+
+def get_lda_vec(lda_dict):
+    """
+    get lda vector
+    :param lda_dict:
+    :return:
+    """
+    lda_vec = np.zeros(50, dtype='float32')
+    for id, val in lda_dict:
+        lda_vec[id] = val
+    return lda_vec
+
+
+def get_theta(texts, lda, dictionari, idx2word):
+    """
+    get doc-topic distribution vector for all reviews
+    :param texts:
+    :param lda:e
+    :param dictionari:
+    :param idx2word:
+    :return:
+    """
+    #texts = np.transpose(texts)
+    texts = texts.data.cpu().numpy()
+    texts = [[get_id2word(idx, idx2word) for idx in sent] for sent in texts]
+    review_alphas = np.array([get_lda_vec(lda[dictionari.doc2bow(sentence)]) for sentence in texts])
+    return torch.from_numpy(review_alphas)
 
 
 def evaluate(model, dataset, mode):
@@ -58,7 +104,8 @@ def evaluate(model, dataset, mode):
 
     for mb in data_iter:
         review, y = mb
-        output = F.sigmoid(model(review))
+        topic = get_theta(review, lda_model, lda_dict, i2w).cuda()
+        output = F.sigmoid(model(review, topic))
 
         scores_o = output.data.cpu() if args.gpu else output.data
         #print (scores_o)
@@ -74,7 +121,8 @@ def test(model, dataset, mode='test'):
     test_scores = []
     for mb in data_iter:
         review = mb
-        output = F.sigmoid(model(review))
+        topic = get_theta(review, lda_model, lda_dict, i2w).cuda()
+        output = F.sigmoid(model(review, topic))
         test_scores.append(output.cpu().data.numpy())
     return (np.concatenate(test_scores))
 
@@ -90,7 +138,8 @@ def run_model(amazon, model, solver):
 
         for it, mb in train_iter:
             review, y = mb
-            output = model(review)
+            topic = get_theta(review, lda_model, lda_dict, i2w).cuda()
+            output = model(review, topic)
 
             loss = F.binary_cross_entropy_with_logits(output, y)
 

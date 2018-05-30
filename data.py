@@ -141,7 +141,7 @@ class Amazon_loader:
         else:
             for i in range(0, len(dataset['X']), self.batch_size):
                 reviews = dataset['X'][i:i + self.batch_size]
-                y = np.zeros(reviews.shape)
+                y = np.zeros((reviews.shape[0], reviews.shape[1]))
 
                 reviews, y = self._load_batch(reviews, y, self.batch_size)
 
