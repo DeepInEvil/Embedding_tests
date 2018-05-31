@@ -22,7 +22,7 @@ class CNN(nn.Module):
         self.conv5 = nn.Conv2d(1, self.n_filter, (5, emb_dim))
 
         self.emb_drop = nn.Dropout(emb_drop)
-        self.fc = nn.Parameter(nn.init.xavier_normal(torch.FloatTensor(self.h_dim, self.out_h)))
+        self.fc = nn.Parameter(nn.init.xavier_normal(torch.FloatTensor(self.h_dim, 1)))
         #self.fc2 = nn.Parameter(nn.init.xavier_normal(torch.FloatTensor(self.out_h + top_dim, 1)))
         self.b = nn.Parameter(torch.FloatTensor([0]))
 
@@ -50,6 +50,6 @@ class CNN(nn.Module):
         out = torch.cat([x3, x4, x5, top], dim=-1)
         #fc1 = torch.mm(out, self.fc)
         #o = torch.mm(torch.cat([fc1, top], dim=-1), self.fc2) + self.b
-        o = torch.mm(out, self.fc)
+        o = torch.mm(out, self.fc) + self.b
 
         return o.squeeze()
