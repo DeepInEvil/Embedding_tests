@@ -49,8 +49,8 @@ max_seq_len = 100
 root_dir = '/data/dchaudhu/ESWC_challenge/'
 lda_model = models.LdaModel.load(root_dir + 'lda_models/amazon_lda')
 lda_dict =  gensim.corpora.Dictionary.load(root_dir + '/lda_models/amazon_dict')
-w2i = np.load(root_dir+'/data/vocab.npy').item()
-i2w = {v: k for k, v in w2i.items()}
+#w2i = np.load(root_dir+'/data/vocab.npy').item()
+#i2w = {v: k for k, v in w2i.items()}
 
 
 def get_id2word(idx, idx2w_dict):
@@ -180,6 +180,9 @@ if __name__ == '__main__':
         print ("Running model for embedding" + str(emb))
         emb_dim = int(emb.split('_')[2].split('s')[1])
         amazon = Amazon_loader(emb_file=emb, emb_dim=emb_dim)
+        w2i = np.load(root_dir + '/data/vocab.npy').item()
+        i2w = {v: k for k, v in w2i.items()}
+        global i2w
         #amazon = Amazon_loader(dom=root_dir+domain, emb_dim=300)
         model = CNN(amazon.emb_dim, amazon.vocab_size, h_dim=args.h_dim, pretrained_emb=amazon.vectors,
                     gpu=args.gpu)
