@@ -173,7 +173,7 @@ if __name__ == '__main__':
                          # 'embeddings_snap_s128_e50.txt', 'embeddings_snap_s512_e50.txt', 'embeddings_snap_s512_e30.txt']
     # word_embeddings = ['embeddings_snap_s512_e15.txt', 'embeddings_snap_s128_e15.txt', 'embeddings_snap_s128_e30.txt',
     #                    'embeddings_snap_s128_e50.txt', 'embeddings_snap_s512_e50.txt', 'embeddings_snap_s512_e30.txt']
-    word_embeddings = ['embeddings_snap_s512_e50']
+    word_embeddings = ['embeddings_snap_s512_e50.txt']
     perf_dict = {}
     for emb in word_embeddings:
 
