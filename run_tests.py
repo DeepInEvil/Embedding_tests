@@ -28,7 +28,7 @@ parser.add_argument('--emb_drop', type=float, default=0.3, metavar='',
                     help='embedding dropout (default: 0.3)')
 parser.add_argument('--mb_size', type=int, default=64, metavar='',
                     help='size of minibatch (default: 128)')
-parser.add_argument('--n_epoch', type=int, default=100, metavar='',
+parser.add_argument('--n_epoch', type=int, default=10, metavar='',
                     help='number of iterations (default: 500)')
 parser.add_argument('--randseed', type=int, default=666, metavar='',
                     help='random seed (default: 666)')
@@ -151,13 +151,6 @@ def run_model(amazon, model, solver):
 
         acc = evaluate(model, amazon, 'valid')
         print("Accuracy after epoch:" + str(epoch) + " is " + str(acc))
-        if epoch < 30:
-            early_stop.append(acc)
-        elif acc < np.max(early_stop[:(epoch-7)]):
-            print("Exiting training......")
-            break
-        else:
-            early_stop.append(acc)
 
     #acc_test = evaluate(model, amazon, 'valid')
     #print("Accuracy on test_set:" + str(acc_test))
@@ -173,7 +166,7 @@ if __name__ == '__main__':
                          # 'embeddings_snap_s128_e50.txt', 'embeddings_snap_s512_e50.txt', 'embeddings_snap_s512_e30.txt']
     # word_embeddings = ['embeddings_snap_s512_e15.txt', 'embeddings_snap_s128_e15.txt', 'embeddings_snap_s128_e30.txt',
     #                    'embeddings_snap_s128_e50.txt', 'embeddings_snap_s512_e50.txt', 'embeddings_snap_s512_e30.txt']
-    word_embeddings = ['embeddings_snap_s256_e15.txt']
+    word_embeddings = ['embeddings_snap_s256_e50.txt']
     perf_dict = {}
     for emb in word_embeddings:
 
@@ -195,6 +188,7 @@ if __name__ == '__main__':
 
         perf_dict[emb+':'+'amazonWE'] = run_model(amazon, model, solver)
         test_out = test(model, amazon)
+        test_out = ['positive' if s > 0.5 else 'negative' for s in test_out]
         np.save(root_dir + 'test_out'+emb+'npy', test_out)
     for k, v in perf_dict.items():
         print (k, v)
