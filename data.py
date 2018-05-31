@@ -103,7 +103,7 @@ class Amazon_loader:
                 for w in sent.split():
                     vocab[w] += 1.0
         for k, v in vocab.items():
-            if v > 5.0:
+            if v > 3.0:
                 out_vocab.append(k)
         w2i = dict(zip(out_vocab, range(1, len(out_vocab) + 1)))
         w2i['UNK'] = len(w2i) + 1
