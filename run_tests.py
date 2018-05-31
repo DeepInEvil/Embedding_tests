@@ -181,8 +181,9 @@ if __name__ == '__main__':
         emb_dim = int(emb.split('_')[2].split('s')[1])
         amazon = Amazon_loader(emb_file=emb, emb_dim=emb_dim)
         w2i = np.load(root_dir + '/data/vocab.npy').item()
-        i2w = {v: k for k, v in w2i.items()}
         global i2w
+        i2w = {v: k for k, v in w2i.items()}
+
         #amazon = Amazon_loader(dom=root_dir+domain, emb_dim=300)
         model = CNN(amazon.emb_dim, amazon.vocab_size, h_dim=args.h_dim, pretrained_emb=amazon.vectors,
                     gpu=args.gpu)
