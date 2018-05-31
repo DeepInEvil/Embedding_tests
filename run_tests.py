@@ -132,7 +132,7 @@ def run_model(amazon, model, solver):
     for epoch in range(args.n_epoch):
         print('\n\n-------------------------------------------')
         print('Epoch-{}'.format(epoch))
-        print('-------------------------------------------')
+        print('------------------------------/home/deep/attentions-------------')
         model.train()
         train_iter = enumerate(amazon.get_iter('train'))
 
@@ -168,12 +168,12 @@ if __name__ == '__main__':
     domains = ['Video_Games', 'Books', 'Toys_Games', 'Tools_Home_Improvement', 'Amazon_Instant_Video', 'Movies_TV', 'Electronics', 'Health',
                'Shoes', 'Baby', 'Automotive', 'Software', 'Sports_Outdoors', 'Clothing_Accessories', 'Beauty', 'Patio', 'Music',
                'Pet_Supplies', 'Office_Products', 'Home_Kitchen']
-    word_embeddings = ['embeddings_snap_s256_e15.txt', 'embeddings_snap_s256_e50.txt', 'embeddings_snap_s256_e30.txt',
-                         'embeddings_snap_s512_e15.txt', 'embeddings_snap_s128_e15.txt', 'embeddings_snap_s128_e30.txt',
-                         'embeddings_snap_s128_e50.txt', 'embeddings_snap_s512_e50.txt', 'embeddings_snap_s512_e30.txt']
+    #word_embeddings = ['embeddings_snap_s256_e15.txt', 'embeddings_snap_s256_e50.txt', 'embeddings_snap_s256_e30.txt',
+                         # 'embeddings_snap_s512_e15.txt', 'embeddings_snap_s128_e15.txt', 'embeddings_snap_s128_e30.txt',
+                         # 'embeddings_snap_s128_e50.txt', 'embeddings_snap_s512_e50.txt', 'embeddings_snap_s512_e30.txt']
     # word_embeddings = ['embeddings_snap_s512_e15.txt', 'embeddings_snap_s128_e15.txt', 'embeddings_snap_s128_e30.txt',
     #                    'embeddings_snap_s128_e50.txt', 'embeddings_snap_s512_e50.txt', 'embeddings_snap_s512_e30.txt']
-
+    word_embeddings = ['embeddings_snap_s512_e50']
     perf_dict = {}
     for emb in word_embeddings:
 
